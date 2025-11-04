@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
-const props = defineProps<{
-    data: string
-}>();
-const emit = defineEmits(['dataUpdated']);
+import { ref } from 'vue';
+import { keyboardData, selectedKey } from '../store';
 
 const keys = [
     [
@@ -80,50 +76,9 @@ const keys = [
     ]
 ]
 
-let data = computed<{ keys: Record<string, string>, hotbar: Record<number, string> }>(() => processData(props.data));
-
-function processData(data: string): { keys: Record<string, string>, hotbar: Record<number, string> } {
-    try {
-        return JSON.parse(atob(data));
-    } catch {
-        return {
-            keys: {
-                w: "move_forward",
-                a: "move_left",
-                s: "move_backward",
-                d: "move_right",
-                shiftleft: "move_sprint",
-                ctrlleft: "move_sneak",
-                space: "move_jump",
-                tab: "inv_open",
-                _1: "hb_1",
-                _3: "hb_2",
-                _4: "hb_3",
-                q: "hb_4",
-                e: "hb_5",
-                r: "hb_6",
-                f: "hb_7",
-                c: "hb_8",
-                v: "hb_9"
-            },
-            hotbar: [
-                "pick",
-                "glow",
-                "pearl",
-                "sword",
-                "block",
-                "gap",
-                "totem",
-                "anchor",
-                "crystal"
-            ]
-        };
-    }
-}
-
 /* return a color string (or empty) based on whether a binding exists */
 function getColor(k: string): string {
-    const key = data.value.keys[k];
+    const key = keyboardData.keys[k];
     if (key) {
         const group = key.split('_')[0];
         if (group == 'move') return 'blue';
@@ -135,19 +90,24 @@ function getColor(k: string): string {
 }
 
 function getAction(k: string): string {
-    const key = data.value.keys[k];
+    const key = keyboardData.keys[k];
     if (key) {
         const group = key.split('_')[0];
 
         if (group == 'hb') {
             const idx = Number(key.split('_')[1]) - 1;
-            return data.value.hotbar[idx] ?? '';
+            return keyboardData.hotbar[idx] ?? '';
         }
 
         if (key == 'inv_open') return 'inventory';
         if (key == 'move_jump') return 'jump';
         if (key == 'move_sprint') return 'sprint';
         if (key == 'move_sneak') return "sneak";
+
+        if (key == 'move_forward') return "forward"
+        if (key == 'move_left') return "left"
+        if (key == 'move_backward') return "back"
+        if (key == 'move_right') return "right"
     }
     return '';
 }
@@ -427,8 +387,14 @@ function getAction(k: string): string {
 
         <div class="row" v-for="row in keys">
 
-            <div class="key" v-for="key in row" :key="key.id"
-                :class="getColor(key.id), key.size == 2 ? 'key-m' : '', key.size == 3 ? 'key-l' : '', key.size == 4 ? 'key-xl' : '', key.size == 5 ? 'key-space' : ''">
+            <div class="key" v-for="key in row" @click="selectedKey.selectedKey = selectedKey.selectedKey == key.id ? '' : key.id " :key="key.id" :class="getColor(key.id),
+                key.size == 2 ? 'key-m' : '',
+                key.size == 3 ? 'key-l' : '',
+                key.size == 4 ? 'key-xl' : '',
+                key.size == 5 ? 'key-space' : '',
+                selectedKey.selectedKey == key.id ? 'selected' : ''
+                ">
+
                 <!-- <div class="key-number">{{ getNumber(key.id) }}</div> -->
                 {{ key.text }}
                 <div class="key-action">{{ getAction(key.id) }}</div>
@@ -515,6 +481,10 @@ function getAction(k: string): string {
     color: #eee;
     margin-top: 2px;
     text-transform: uppercase;
+}
+
+.key.selected {
+    border-color: #eee !important;
 }
 
 /* Colored Keys */

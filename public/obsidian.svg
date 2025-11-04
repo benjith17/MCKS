@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" x="0" y="0" version="1.1" viewBox="0 0 1080 1080" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <clipPath id="clip-0">
+      <path d="M 479.759 140.025 Q 540 105.245 600.241 140.025 L 856.267 287.842 Q 916.509 322.623 916.509 392.183 L 916.509 687.817 Q 916.509 757.377 856.267 792.158 L 600.241 939.975 Q 540 974.755 479.759 939.975 L 223.733 792.158 Q 163.491 757.378 163.491 687.817 L 163.491 392.183 Q 163.491 322.622 223.733 287.842 Z" bx:shape="n-gon 540 540 434.755 434.755 6 0.16 1@173eccfc" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+    </clipPath>
+    <clipPath id="clip-1">
+      <path d="M 58.962 261.56 L 540.996 539.863 L 540.996 1096.467 L 58.962 1374.77 L -423.072 1096.468 L -423.072 539.863 Z" bx:shape="n-gon 58.962 818.165 556.605 556.605 6 0 1@702b5122" style="stroke: rgb(0, 0, 0); mix-blend-mode: color-burn; fill: rgb(64, 42, 230);"/>
+    </clipPath>
+    <clipPath id="clip-2">
+      <path d="M 540 -572.791 L 1022.034 -294.488 L 1022.034 262.116 L 540 540.419 L 57.966 262.117 L 57.966 -294.489 Z" bx:shape="n-gon 540 -16.186 556.605 556.605 6 0 1@a6dcb694" style="stroke: rgb(0, 0, 0); mix-blend-mode: color-burn; fill: rgba(58, 44, 221, 0.776);"/>
+    </clipPath>
+  </defs>
+  <style>.st0{fill:#71bfdd}.st1{fill:#d44e50}.st2{fill:#6195d9}.st4{fill:#fff}.st5{fill:none;stroke:#9d2323;stroke-width:30.0834;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}.st7{fill:#8083bf}.st10{opacity:.21;fill:#c7a3e8}</style>
+  <path d="M 479.759 141.025 Q 540 106.245 600.241 141.025 L 856.267 288.842 Q 916.509 323.623 916.509 393.183 L 916.509 688.817 Q 916.509 758.377 856.267 793.158 L 600.241 940.975 Q 540 975.755 479.759 940.975 L 223.733 793.158 Q 163.491 758.378 163.491 688.817 L 163.491 393.183 Q 163.491 323.622 223.733 288.842 Z" bx:shape="n-gon 540 541 434.755 434.755 6 0.16 1@9683d85f" style="clip-path: url(&quot;#clip-2&quot;); fill: rgb(113, 70, 211); stroke: rgb(113, 70, 211);"/>
+  <path d="M 1022.03 261.56 L 1504.064 539.863 L 1504.064 1096.467 L 1022.03 1374.77 L 539.996 1096.468 L 539.996 539.863 Z" bx:shape="n-gon 1022.03 818.165 556.605 556.605 6 0 1@f4b4f196" style="transform-box: fill-box; transform-origin: 50% 50%; fill: rgb(57, 10, 127); clip-path: url(&quot;#clip-0&quot;); stroke: rgb(57, 10, 127);"/>
+  <path d="M 480.759 140.025 Q 541 105.245 601.241 140.025 L 857.267 287.842 Q 917.509 322.623 917.509 392.183 L 917.509 687.817 Q 917.509 757.377 857.267 792.158 L 601.241 939.975 Q 541 974.755 480.759 939.975 L 224.733 792.158 Q 164.491 757.378 164.491 687.817 L 164.491 392.183 Q 164.491 322.622 224.733 287.842 Z" bx:shape="n-gon 541 540 434.755 434.755 6 0.16 1@daccddd1" style="clip-path: url(&quot;#clip-1&quot;); fill: rgb(100, 18, 211); stroke: rgb(100, 18, 211);"/>
+</svg>
