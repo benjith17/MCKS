@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 
 import { ref } from 'vue';
-import { keyboardData } from '../store';
+import { keyboardData, displaySettings } from '../store';
 
 const items = [
+    { id: 'none', label: "Any/Empty", icon: 'none' },
     { id: 'sword', label: "Sword", icon: 'sword' },
     { id: 'axe', label: "Axe", icon: 'axe' },
     { id: 'pick', label: "Pickaxe", icon: 'pick'},
@@ -11,6 +12,7 @@ const items = [
     { id: 'crystal', label: "Crystals", icon: 'crystal' },
     { id: 'anchor', label: "Respawn Anchor", icon: 'anchor' },
     { id: 'glow', label: "Glowstone", icon: 'glow' },
+    { id: 'pearl', label: "Ender Pearl", icon: 'pearl' },
     { id: 'gap', label: "Golden Apple", icon: 'gap' },
     { id: 'food', label: "Food", icon: 'food' },
     { id: 'totem', label: "Totem of Undying", icon: 'totem' },
@@ -23,6 +25,8 @@ let selectedSlot = ref(0);
 let showPopover = ref(false);
 
 function editHotbarSlot(n: number) {
+    if (displaySettings.viewMode) return;
+    
     selectedSlot.value = n;
     showPopover.value = true;
 }
@@ -36,20 +40,20 @@ function keybindForHotbar(n: number) {
     Object.keys(keyboardData.keys).forEach(k => {
         const e = keyboardData.keys[k];
         if (e?.includes('hb_' + n.toString())) {
-            keybind = e;
+            keybind = k;
         }
     })
-    return keybind;
+    return '';
 }
 
 </script>
 
 <template>
     <div class="settings-section">
-        <div v-for="slot in [1, 2, 3, 4, 5, 6, 7, 8, 9]">
+        <div v-for="slot in [0, 1, 2, 3, 4, 5, 6, 7, 8]">
             <!-- <label class="form-label">Slot {{ slot }} item</label> -->
             <button @click="editHotbarSlot(slot)" class="cell hotbar-slot">
-                <img :src="'./' +  keyboardData.hotbar[slot] + '.svg'">
+                <img :src="'/' +  keyboardData.hotbar[slot] + '.svg'">
                 <div class="cell-label">{{ keybindForHotbar(slot) }}</div>
             </button>
         </div>
@@ -58,7 +62,7 @@ function keybindForHotbar(n: number) {
     <div @click="closeHotbarSlotEditor" class="cover" :style="{display: showPopover ? '' : 'none'}"></div>
     <div class="popover settings-section grid" :style="{display: showPopover ? '' : 'none'}">
         <div v-for="item in items" @click="keyboardData.hotbar[selectedSlot] = item.id; closeHotbarSlotEditor()" class="cell tooltip" :data-tooltip="item.label">
-            <img :src="'./' +  item.icon + '.svg'">
+            <img :src="'/' +  item.icon + '.svg'">
         </div>
     </div>
 </template>

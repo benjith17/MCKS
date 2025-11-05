@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { keyboardData, selectedKey } from '../store';
+import { keyboardData, displaySettings } from '../store';
 
 const keys = [
     [
@@ -76,6 +76,29 @@ const keys = [
     ]
 ]
 
+const keybinds = [
+    { id: '', label: "Unbound" },
+    { id: 'move_forward', label: "Move Forward" },
+    { id: 'move_backward', label: "Move Backward" },
+    { id: 'move_left', label: "Strafe Left" },
+    { id: 'move_right', label: "Strafe Right" },
+    { id: 'move_jump', label: "Jump" },
+    { id: 'move_sprint', label: "Sprint" },
+    { id: 'move_sneak', label: "Sneak" },
+    { id: 'inv_open', label: "Inventory" },
+    { id: 'hb_1', label: "Slot 1" },
+    { id: 'hb_2', label: "Slot 2" },
+    { id: 'hb_3', label: "Slot 3" },
+    { id: 'hb_4', label: "Slot 4" },
+    { id: 'hb_5', label: "Slot 5" },
+    { id: 'hb_6', label: "Slot 6" },
+    { id: 'hb_7', label: "Slot 7" },
+    { id: 'hb_8', label: "Slot 8" },
+    { id: 'hb_9', label: "Slot 9" },
+    { id: 'inv_drop', label: "Drop Item" },
+    { id: 'misc_playerlist', label: "Player List" },
+]
+
 /* return a color string (or empty) based on whether a binding exists */
 function getColor(k: string): string {
     const key = keyboardData.keys[k];
@@ -84,6 +107,7 @@ function getColor(k: string): string {
         if (group == 'move') return 'blue';
         if (group == 'inv') return 'purple';
         if (group == 'hb') return 'green';
+        if (group == 'misc') return 'grey'
     }
 
     return '';
@@ -100,6 +124,9 @@ function getAction(k: string): string {
         }
 
         if (key == 'inv_open') return 'inventory';
+        if (key == 'inv_drop') return 'drop';
+
+
         if (key == 'move_jump') return 'jump';
         if (key == 'move_sprint') return 'sprint';
         if (key == 'move_sneak') return "sneak";
@@ -108,6 +135,8 @@ function getAction(k: string): string {
         if (key == 'move_left') return "left"
         if (key == 'move_backward') return "back"
         if (key == 'move_right') return "right"
+
+        if (key == 'misc_playerlist') return "list"
     }
     return '';
 }
@@ -119,6 +148,23 @@ function getAction(k: string): string {
 //     }
 //     return '';
 // }
+
+const showPopover = ref(false);
+const selectedKey = ref('');
+const selectedKeyText = ref("");
+
+function editKey(k: string, t: string) {
+    if (displaySettings.viewMode) return;
+    
+    showPopover.value = true;
+    selectedKey.value = k;
+    selectedKeyText.value = t;
+}
+
+function closeKeyEdit() {
+    showPopover.value = false;
+}
+
 
 </script>
 
@@ -387,28 +433,105 @@ function getAction(k: string): string {
 
         <div class="row" v-for="row in keys">
 
-            <div class="key" v-for="key in row" @click="selectedKey.selectedKey = selectedKey.selectedKey == key.id ? '' : key.id " :key="key.id" :class="getColor(key.id),
+            <div @click="editKey(key.id, key.text)" class="key" v-for="key in row" :class="getColor(key.id),
                 key.size == 2 ? 'key-m' : '',
                 key.size == 3 ? 'key-l' : '',
                 key.size == 4 ? 'key-xl' : '',
-                key.size == 5 ? 'key-space' : '',
-                selectedKey.selectedKey == key.id ? 'selected' : ''
+                key.size == 5 ? 'key-space' : ''
                 ">
 
-                <!-- <div class="key-number">{{ getNumber(key.id) }}</div> -->
+                <!-- <div class=" key-number">{{ getNumber(key.id) }}</div> -->
                 {{ key.text }}
                 <div class="key-action">{{ getAction(key.id) }}</div>
             </div>
 
         </div>
 
+    </div>
 
 
+    <div @click="closeKeyEdit()" class="cover" :style="{ display: showPopover ? '' : 'none' }"></div>
+    <div class="popover settings-section grid" :style="{ display: showPopover ? '' : 'none' }">
+        <div class="key ">{{ selectedKeyText }}</div>
+        <div class="dropdown">
+            <select v-model="keyboardData.keys[selectedKey]" class="dropdown-select">
+                <option v-for="keybind in keybinds" :value="keybind.id">{{ keybind.label }}</option>
+            </select>
+        </div>
     </div>
 
 </template>
 
 <style scoped>
+.settings-section {
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border: 2px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.cover {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1f1f1fb3;
+    top: 0;
+    left: 0;
+}
+
+.popover {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+
+}
+
+.dropdown-select {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
+    border: 2px solid #3a3a3a;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.3s;
+    box-shadow: 0 2px 0 #0a0a0a;
+}
+
+.dropdown-select:hover {
+    border-color: #4ade80;
+    background: linear-gradient(145deg, #2f2f2f, #242424);
+}
+
+.dropdown-select:focus {
+    outline: none;
+    border-color: #4ade80;
+    box-shadow: 0 2px 0 #0a0a0a, 0 0 15px rgba(74, 222, 128, 0.3);
+}
+
+.dropdown::after {
+    content: '▼';
+    position: absolute;
+    right: 38px;
+    top: 51px;
+    transform: translateY(-50%);
+    color: #4ade80;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+option {
+    background-color: #1f1f1f;
+}
+
 .keyboard {
     background: #1a1a1a;
     border-radius: 15px;
@@ -586,5 +709,15 @@ function getAction(k: string): string {
 
 .key.indigo:hover {
     box-shadow: 0 5px 0 #3730a3, 0 0 25px rgba(129, 140, 248, 0.6);
+}
+
+.key.grey {
+    background: linear-gradient(145deg, #94a3b8, #64748b);
+    border-color: #cbd5e1;
+    box-shadow: 0 3px 0 #475569, 0 0 20px rgba(129, 140, 248, 0.4);
+}
+
+.key.grey:hover {
+    box-shadow: 0 5px 0 #475569, 0 0 25px rgba(129, 140, 248, 0.6);
 }
 </style>
