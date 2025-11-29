@@ -130,7 +130,7 @@ async function copyLink() {
     </pre> -->
 
     <p>
-        Copyright &copy; Benjy Abbott (benjith17) 2025<br/>
+        Copyright &copy; benjith17 2025<br/>
         Some icons from <a href="https://mctiers.com/" target="_blank">MCTiers</a>. <br/>
         If you are from MCTiers and want me to stop using your icons then open an issue on GH.
     </p>
