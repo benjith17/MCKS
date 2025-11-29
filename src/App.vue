@@ -121,6 +121,9 @@ async function copyLink() {
                 <span v-else>☀️</span>
             </button>
         </div>
+        <p v-if="displaySettings.captureMode">
+            Made with <img src="/pick.svg" width="15"></img> MCKS <span style="color: #aaaaaa">(https://mcks-cie.pages.dev/)</span>
+        </p>
     </div>
     <!-- <pre>
         {{ keyboardData }}

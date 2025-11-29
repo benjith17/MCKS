@@ -36,10 +36,13 @@ function updateTheme(mode: 'light' | 'dark') {
 }
 
 export const allTags = reactive<tag[]>([
-    // { id: 'type_crystal', name: "Crystal PVP", color: "#c889e6" },
     // { id: 'type_', name: "Crystal PVP", color: "#c889e6" },
     { id: 'owner_me', name: "My binds", color: '#18613eff' },
     { id: 'owner_yt', name: "Youtuber's Binds", color: '#621317ff' },
+    { id: 'type_crystal', name: "Crystal PVP", color: "#7d5590ff" },
+    { id: 'type_sword', name: "Sword", color: "#36727cff" },
+    { id: 'type_axe', name: "Axe", color: "#404f7eff" },
+    { id: 'type_uhc', name: "UHC", color: "#224535ff" },
 ]);
 
 export { getSystemTheme };

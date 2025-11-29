@@ -13,6 +13,7 @@ const items = [
     { id: 'anchor', label: "Respawn Anchor", icon: 'anchor' },
     { id: 'glow', label: "Glowstone", icon: 'glow' },
     { id: 'pearl', label: "Ender Pearl", icon: 'pearl' },
+    { id: 'mace', label: "Mace", icon: 'mace' },
     { id: 'gap', label: "Golden Apple", icon: 'gap' },
     { id: 'food', label: "Food", icon: 'food' },
     { id: 'totem', label: "Totem of Undying", icon: 'totem' },
