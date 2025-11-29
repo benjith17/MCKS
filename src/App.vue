@@ -92,6 +92,24 @@ async function copyLink() {
 </script>
 
 <template>
+    <nav>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.5rem 0.75rem;">
+            <a href="/" style="display:inline-flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;">
+                <img src="/pick.svg" width="25" height="25"></img>
+                <span style="font-weight:700;font-size:1rem;line-height:1;">MC Keybinds Share</span>
+            </a>
+            
+            <a href="https://github.com/benjith17/MCKS" target="_blank" rel="noopener noreferrer" style="margin-left:auto;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:inherit;">
+                <i class="bi bi-github"></i>
+                <span style="font-weight:600;font-size:0.95rem;">GitHub</span>
+            </a>
+
+            <!-- <a href="https://discord.gg/your-invite" target="_blank" rel="noopener noreferrer" style="margin-left:auto;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:inherit;">
+                <i class="bi bi-discord"></i>
+                <span style="font-weight:600;font-size:0.95rem;">Discord</span>
+            </a> -->
+        </div>
+    </nav>
     <div ref="captureArea" class="container">
         <Metadata />
         <Keyboard />
@@ -111,7 +129,7 @@ async function copyLink() {
     <p>
         Copyright &copy; Benjy Abbott (benjith17) 2025<br/>
         Some icons from <a href="https://mctiers.com/" target="_blank">MCTiers</a>. <br/>
-        If you are from MCTiers and want me to stop using your icons then contact me <strong>@.benjid</strong>
+        If you are from MCTiers and want me to stop using your icons then open an issue on GH.
     </p>
 
 
