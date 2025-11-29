@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { keyboardData, displaySettings } from './store';
+import { keyboardData, displaySettings, themeSettings, initializeTheme, setTheme } from './store';
 import { toPng } from 'html-to-image';
 
 import Keyboard from './components/Keyboard.vue';
@@ -12,6 +12,7 @@ watch(keyboardData, (v) => {
 })
 
 onMounted(() => {
+    initializeTheme();
     if (window.location.pathname == '/view/') displaySettings.viewMode = true;
 
     if (window.location.hash) {
@@ -39,6 +40,11 @@ onMounted(() => {
 
 const displaySharePopup = ref(false);
 
+function toggleTheme() {
+    const newTheme = themeSettings.mode === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
 function share() {
     displaySharePopup.value = true;
 }
@@ -59,7 +65,7 @@ async function capture() {
         });
         // download:
         const link = document.createElement('a');
-        link.download = 'capture.png';
+        link.download = keyboardData.name + '.png';
         link.href = dataUrl;
         link.click();
     } catch (err) {
@@ -90,7 +96,13 @@ async function copyLink() {
         <Metadata />
         <Keyboard />
         <Hotbar />
-        <button @click="share()" v-if="displaySettings.captureMode == false">Share</button>
+        <div class="button-group">
+            <button @click="share()" v-if="displaySettings.captureMode == false">Share</button>
+            <button @click="toggleTheme()" class="theme-toggle" title="Toggle light/dark mode" v-if="displaySettings.captureMode == false">
+                <span v-if="themeSettings.mode === 'dark'">🌙</span>
+                <span v-else>☀️</span>
+            </button>
+        </div>
     </div>
     <!-- <pre>
         {{ keyboardData }}
@@ -125,11 +137,24 @@ async function copyLink() {
     overflow: hidden;
 }
 
+.button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle {
+    padding: 0.5em 0.8em;
+    font-size: 1.2em;
+    border-radius: 6px;
+}
+
 .cover {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: #1f1f1fb3;
+    background-color: var(--color-overlay);
     top: 0;
     left: 0;
 

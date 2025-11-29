@@ -69,8 +69,8 @@ function keybindForHotbar(n: number) {
 
 <style scoped>
 .settings-section {
-    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-    border: 2px solid #2a2a2a;
+    background: linear-gradient(145deg, var(--color-bg-secondary), var(--color-bg-tertiary));
+    border: 2px solid var(--color-border);
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 30px;
@@ -81,13 +81,12 @@ function keybindForHotbar(n: number) {
 .settings-section.grid {
     display: inline-flex;
     flex-wrap: wrap;
-    /* max-width: 60vw; */
     width: fit-content;
     margin: 100px;
 }
 
 .form-label {
-    color: #fff;
+    color: var(--color-text-primary);
     font-size: 14px;
     font-weight: bold;
     margin-top: 10px;
@@ -98,15 +97,15 @@ function keybindForHotbar(n: number) {
     width: 50px;
     height: 50px;
     padding: 12px 12px 12px 12px;
-    background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-    border: 2px solid #3a3a3a;
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
+    border: 2px solid var(--color-border);
     border-radius: 8px;
-    color: #fff;
+    color: #ffffff;
     font-size: 14px;
     cursor: pointer;
     appearance: none;
     transition: all 0.3s;
-    box-shadow: 0 2px 0 #0a0a0a;
+    box-shadow: 0 2px 0 var(--color-shadow-dark);
     display: flex;
     align-content: center;
     align-items: center;
@@ -115,19 +114,19 @@ function keybindForHotbar(n: number) {
 }
 
 .cell:hover {
-    border-color: #4ade80;
-    background: linear-gradient(145deg, #2f2f2f, #242424);
+    border-color: var(--color-border-focus);
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
 }
 
 .cell:focus {
     outline: none;
-    border-color: #4ade80;
-    box-shadow: 0 2px 0 #0a0a0a, 0 0 15px rgba(74, 222, 128, 0.3);
+    border-color: var(--color-border-focus);
+    box-shadow: 0 2px 0 var(--color-shadow-dark), 0 0 15px rgba(74, 222, 128, 0.3);
 }
 
 .cell-label {
     font-size: 9px;
-    color: #eee;
+    color: #ffffff;
     margin-top: 2px;
     text-transform: uppercase;
 }
@@ -140,14 +139,14 @@ function keybindForHotbar(n: number) {
 }
 
 option {
-    background-color: #1f1f1f;
+    background-color: var(--color-bg-secondary);
 }
 
 .cover {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: #1f1f1fb3;
+    background-color: var(--color-overlay);
     top: 0;
     left: 0;
 }
@@ -156,17 +155,5 @@ option {
     position: absolute;
     display: flex;
     flex-direction: row;
-
 }
-
-/* .dropdown::after {
-    content: '▼';
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #4ade80;
-    pointer-events: none;
-    font-size: 12px;
-} */
 </style>

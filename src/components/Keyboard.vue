@@ -53,6 +53,7 @@ const keys = [
     ],
     [
         { id: 'shiftleft', text: 'SHIFT', size: 2 },
+        { id: 'backslash', text: '\\', size: 1 },
         { id: 'z', text: 'Z', size: 1 },
         { id: 'x', text: 'X', size: 1 },
         { id: 'c', text: 'C', size: 1 },
@@ -63,7 +64,7 @@ const keys = [
         { id: 'comma', text: ',', size: 1 },
         { id: 'period', text: '.', size: 1 },
         { id: 'slash', text: '/', size: 1 },
-        { id: 'shiftright', text: 'SHIFT', size: 4 }
+        { id: 'shiftright', text: 'SHIFT', size: 3 }
     ],
     [
         { id: 'ctrlleft', text: 'CTRL', size: 2 },
@@ -76,41 +77,71 @@ const keys = [
     ]
 ]
 
-const keybinds = [
-    { id: '', label: "Unbound" },
-    { id: 'move_forward', label: "Move Forward" },
-    { id: 'move_backward', label: "Move Backward" },
-    { id: 'move_left', label: "Strafe Left" },
-    { id: 'move_right', label: "Strafe Right" },
-    { id: 'move_jump', label: "Jump" },
-    { id: 'move_sprint', label: "Sprint" },
-    { id: 'move_sneak', label: "Sneak" },
-    { id: 'inv_open', label: "Inventory" },
-    { id: 'hb_1', label: "Slot 1" },
-    { id: 'hb_2', label: "Slot 2" },
-    { id: 'hb_3', label: "Slot 3" },
-    { id: 'hb_4', label: "Slot 4" },
-    { id: 'hb_5', label: "Slot 5" },
-    { id: 'hb_6', label: "Slot 6" },
-    { id: 'hb_7', label: "Slot 7" },
-    { id: 'hb_8', label: "Slot 8" },
-    { id: 'hb_9', label: "Slot 9" },
-    { id: 'inv_drop', label: "Drop Item" },
-    { id: 'misc_playerlist', label: "Player List" },
+const keybinds: {
+    id: string,
+    label: string,
+    short?: string
+}[] = [
+        // { id: '', label: "Unbound" },
+        { id: 'move_forward', label: "Move Forward", short: "forward" },
+        { id: 'move_backward', label: "Move Backward", short: "back" },
+        { id: 'move_left', label: "Strafe Left", short: "left" },
+        { id: 'move_right', label: "Strafe Right", short: "right" },
+        { id: 'move_jump', label: "Jump" },
+        { id: 'move_sprint', label: "Sprint" },
+        { id: 'move_sneak', label: "Sneak" },
+
+        { id: 'inv_open', label: "Inventory", short: "inv" },
+        { id: 'inv_offhand', label: "Off Hand" },
+        { id: 'inv_drop', label: "Drop Item", short: "drop" },
+
+        { id: 'misc_playerlist', label: "Player List", short: "list" },
+        { id: 'misc_zoom', label: "Zoom" },
+
+        // { id: 'hb_1', label: "Slot 1" },
+        // { id: 'hb_2', label: "Slot 2" },
+        // { id: 'hb_3', label: "Slot 3" },
+        // { id: 'hb_4', label: "Slot 4" },
+        // { id: 'hb_5', label: "Slot 5" },
+        // { id: 'hb_6', label: "Slot 6" },
+        // { id: 'hb_7', label: "Slot 7" },
+        // { id: 'hb_8', label: "Slot 8" },
+        // { id: 'hb_9', label: "Slot 9" },
+    ]
+
+const highlights = [
+    'green',
+    'blue',
+    'purple',
+    'red',
+    'yellow',
+    'cyan',
+    'orange',
+    'pink',
 ]
 
 /* return a color string (or empty) based on whether a binding exists */
-function getColor(k: string): string {
+function getKeyColor(k: string): string {
     const key = keyboardData.keys[k];
     if (key) {
-        const group = key.split('_')[0];
-        if (group == 'move') return 'blue';
-        if (group == 'inv') return 'purple';
-        if (group == 'hb') return 'green';
-        if (group == 'misc') return 'grey'
+        return getColor(key);
     }
 
     return '';
+}
+
+function getColor(k: string) {
+    const group = k.split('_')[0];
+    if (group == 'move') return 'blue';
+    if (group == 'inv') return 'purple';
+    if (group == 'hb') return 'green';
+    if (group == 'misc') return 'grey';
+
+    if (group == 'hl') {
+        return 'hl-' + k.split('_')[1];
+    }
+
+    return ''
 }
 
 function getAction(k: string): string {
@@ -120,23 +151,15 @@ function getAction(k: string): string {
 
         if (group == 'hb') {
             const idx = Number(key.split('_')[1]) - 1;
-            return keyboardData.hotbar[idx] ?? '';
+            const item = keyboardData.hotbar[idx] ?? '';
+            if (item == 'none') return 'slot ' + (idx + 1).toString();
+            return item;
+        }
+        for (let i of keybinds) {
+            if (i.id == key) return i.short || i.label;
         }
 
-        if (key == 'inv_open') return 'inventory';
-        if (key == 'inv_drop') return 'drop';
-
-
-        if (key == 'move_jump') return 'jump';
-        if (key == 'move_sprint') return 'sprint';
-        if (key == 'move_sneak') return "sneak";
-
-        if (key == 'move_forward') return "forward"
-        if (key == 'move_left') return "left"
-        if (key == 'move_backward') return "back"
-        if (key == 'move_right') return "right"
-
-        if (key == 'misc_playerlist') return "list"
+        return '';
     }
     return '';
 }
@@ -155,7 +178,7 @@ const selectedKeyText = ref("");
 
 function editKey(k: string, t: string) {
     if (displaySettings.viewMode) return;
-    
+
     showPopover.value = true;
     selectedKey.value = k;
     selectedKeyText.value = t;
@@ -170,275 +193,18 @@ function closeKeyEdit() {
 
 <template>
     <!-- <pre style="text-align: left;">{{ data }}</pre> -->
-    <!-- <div class="keyboard">
-
-        <div class="row">
-
-            <div class="key" :class="[getColor('backtick')]">
-                `
-                <div class="key-action">{{ getAction('backtick') }}</div>
-            </div>
-
-            <div class="key" :class="[getColor('_1')]">
-                1
-                <div class="key-action">{{ getAction('_1') }}</div>
-            </div>
-
-            <div class="key">
-                2
-            </div>
-
-            <div class="key">
-                3
-            </div>
-
-            <div class="key">
-                4
-            </div>
-
-            <div class="key">
-                5
-            </div>
-
-            <div class="key">
-                6
-            </div>
-
-            <div class="key">
-                7
-            </div>
-
-            <div class="key">
-                8
-            </div>
-
-            <div class="key">
-                9
-            </div>
-
-            <div class="key">
-                0
-            </div>
-
-            <div class="key">
-                -
-            </div>
-
-            <div class="key">
-                =
-            </div>
-
-            <div class="key key-m">
-                BKSP
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="key key-m purple">
-                TAB
-                <div class="key-action">Inventory</div>
-            </div>
-
-            <div class="key green">
-                <div class="key-number">4</div>
-                <svg class="key-icon" fill="#ffffff" height="16" width="16" version="1.1" id="Capa_1"
-                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 290.226 290.226" xml:space="preserve" transform="matrix(-1, 0, 0, 1, 0, 0)"
-                    stroke="#ffffff">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
-                        stroke-width="1.160904"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <g>
-                            <path
-                                d="M63.951,243.575c-1.945-3.578-4.401-6.907-7.363-9.869c-3.106-3.102-6.626-5.633-10.4-7.63 c-4.51-2.387-0.945-7.5-0.945-7.5c4.616-7.023,8.825-14.079,12.305-20.226l-23.363-23.344H11.504c-4.362,0-7.898-3.539-7.898-7.902 c0-4.361,3.536-7.9,7.898-7.9h25.947c2.1,0,4.107,0.832,5.588,2.312l85.379,85.291c1.483,1.483,2.315,3.495,2.315,5.589v26.073 c0,4.365-3.537,7.897-7.9,7.897c-4.367,0-7.904-3.531-7.904-7.897v-22.798l-23.27-23.24c-6.281,3.707-13.582,8.252-20.816,13.25 C70.842,245.679,66.698,248.629,63.951,243.575z">
-                            </path>
-                            <path
-                                d="M26.61,237.102c-7.106,0-13.784,2.764-18.812,7.784c-5.019,5.015-7.782,11.686-7.782,18.778 c0,7.097,2.764,13.762,7.782,18.776c5.027,5.016,11.706,7.783,18.812,7.785c7.102,0,13.781-2.77,18.804-7.785 c5.023-5.015,7.79-11.682,7.79-18.776c0-7.093-2.768-13.764-7.79-18.778C40.392,239.866,33.712,237.102,26.61,237.102z">
-                            </path>
-                            <path
-                                d="M100.985,182.318c-3.502,3.499-9.232,3.499-12.734,0.001l-8.81-8.801c-3.502-3.498-3.502-9.223,0-12.721L229.832,10.564 c3.502-3.498,10.401-6.727,15.33-7.175l36.862-3.352c4.93-0.448,8.596,3.218,8.148,8.148l-3.346,36.791 c-0.448,4.93-3.68,11.825-7.182,15.324l-150.4,150.251c-3.502,3.498-9.232,3.498-12.734,0l-8.822-8.813 c-3.502-3.498-3.502-9.223,0-12.722L233.608,63.213c1.854-1.848,1.856-4.852,0.003-6.702c-1.848-1.853-4.853-1.853-6.709-0.002 L100.985,182.318z">
-                            </path>
-                        </g>
-                    </g>
-                </svg>
-                Q
-            </div>
-
-            <div class="key blue">
-                <i class="key-icon bi bi-arrow-up"></i>
-                W
-            </div>
-
-            <div class="key" :class="[getColor('e')]">
-                E
-                <div class="key-action">{{ getAction('e') }}</div>
-            </div>
-
-            <div class="key">
-                R
-            </div>
-
-            <div class="key">
-                T
-            </div>
-
-            <div class="key">
-                Y
-            </div>
-
-            <div class="key">
-                U
-            </div>
-
-            <div class="key">
-                I
-            </div>
-
-            <div class="key">
-                O
-            </div>
-
-            <div class="key">
-                P
-            </div>
-
-            <div class="key">
-                [ {
-            </div>
-
-            <div class="key">
-                ] }
-            </div>
-
-            <div class="key">
-                # ~
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="key key-l">
-                CAPS
-            </div>
-
-            <div class="key blue">
-                A
-            </div>
-
-            <div class="key blue">
-                S
-            </div>
-
-            <div class="key blue">
-                D
-            </div>
-
-            <div class="key">
-                F
-            </div>
-
-            <div class="key">
-                G
-            </div>
-
-            <div class="key">
-                H
-            </div>
-
-            <div class="key">
-                J
-            </div>
-
-            <div class="key">
-                K
-            </div>
-
-            <div class="key">
-                L
-            </div>
-
-            <div class="key">
-                ; :
-            </div>
-
-            <div class="key">
-                ' @
-            </div>
-
-            <div class="key key-m">
-                RETURN
-            </div>
-
-        </div>
-
-        <div class="row">
-
-            <div class="key key-m">
-                SHIFT
-            </div>
-
-            <div class="key">
-                Z
-            </div>
-
-            <div class="key">
-                X
-            </div>
-
-            <div class="key">
-                C
-            </div>
-
-            <div class="key">
-                V
-            </div>
-
-            <div class="key">
-                B
-            </div>
-
-            <div class="key">
-                N
-            </div>
-
-            <div class="key">
-                M
-            </div>
-
-            <div class="key">
-                ,
-            </div>
-
-            <div class="key">
-                .
-            </div>
-
-            <div class="key">
-                /
-            </div>
-
-            <div class="key key-xl">
-                SHIFT
-            </div>
-
-        </div>
-
-    </div> -->
 
     <div class="keyboard">
 
         <div class="row" v-for="row in keys">
 
-            <div @click="editKey(key.id, key.text)" class="key" v-for="key in row" :class="getColor(key.id),
-                key.size == 2 ? 'key-m' : '',
-                key.size == 3 ? 'key-l' : '',
-                key.size == 4 ? 'key-xl' : '',
-                key.size == 5 ? 'key-space' : ''
-                ">
+            <div @click="editKey(key.id, key.text)" @contextmenu.prevent="keyboardData.keys[key.id] = ''" class="key"
+                v-for="key in row" :class="getKeyColor(key.id),
+                    key.size == 2 ? 'key-m' : '',
+                    key.size == 3 ? 'key-l' : '',
+                    key.size == 4 ? 'key-xl' : '',
+                    key.size == 5 ? 'key-space' : ''
+                    ">
 
                 <!-- <div class=" key-number">{{ getNumber(key.id) }}</div> -->
                 {{ key.text }}
@@ -451,35 +217,63 @@ function closeKeyEdit() {
 
 
     <div @click="closeKeyEdit()" class="cover" :style="{ display: showPopover ? '' : 'none' }"></div>
-    <div class="popover settings-section grid" :style="{ display: showPopover ? '' : 'none' }">
-        <div class="key ">{{ selectedKeyText }}</div>
-        <div class="dropdown">
+    <div class="popover" style="padding-top: 0;" :style="{ display: showPopover ? '' : 'none' }">
+        <div class="key" style="margin-bottom: -25px;">{{ selectedKeyText }}</div>
+        <div class="settings-section" style="padding-top: 35px;">
+
+            <div class="bind-options">
+                <div class="bind-option hl-red" @click="keyboardData.keys[selectedKey] = ''; closeKeyEdit()">
+                    Unbind
+                </div>
+
+                <div v-for="keybind in keybinds" @click="keyboardData.keys[selectedKey] = keybind.id; closeKeyEdit()"
+                    class="bind-option" :class="'hl-' + getColor(keybind.id)" :data-tooltip="keybind.label">
+                    {{ keybind.label }}
+                </div>
+            </div>
+
+            <div class="hb">
+                <div v-for="slot in [0, 1, 2, 3, 4, 5, 6, 7, 8]" class="hb-slot"
+                    @click="keyboardData.keys[selectedKey] = 'hb_' + (slot + 1); closeKeyEdit()">
+                    <img :src="'/' +  keyboardData.hotbar[slot] + '.svg'">
+                </div>
+            </div>
+
+            <div class="hl-colors">
+                <div class="hl-color" v-for="hlColor in highlights" :class="'hl-' + hlColor" @click="keyboardData.keys[selectedKey] = 'hl_'+hlColor; closeKeyEdit()"></div>
+            </div>
+        </div>
+
+        <!-- <div class="dropdown">
             <select v-model="keyboardData.keys[selectedKey]" class="dropdown-select">
                 <option v-for="keybind in keybinds" :value="keybind.id">{{ keybind.label }}</option>
+                <option disabled>---</option>
+                <option v-for="hl in highlights" :value="'hl_' + hl">Highlight {{ hl }}</option>
             </select>
-        </div>
+        </div> -->
     </div>
 
 </template>
 
 <style scoped>
 .settings-section {
-    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-    border: 2px solid #2a2a2a;
+    background: linear-gradient(145deg, var(--color-bg-secondary), var(--color-bg-tertiary));
+    border: 2px solid var(--color-border);
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 30px;
     display: flex;
     gap: 8px;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .cover {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: #1f1f1fb3;
+    background-color: var(--color-overlay);
     top: 0;
     left: 0;
 }
@@ -487,34 +281,34 @@ function closeKeyEdit() {
 .popover {
     position: absolute;
     display: flex;
-    flex-direction: row;
-
+    flex-direction: column;
+    align-items: center;
 }
 
 .dropdown-select {
     width: 100%;
     padding: 12px 40px 12px 15px;
-    background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-    border: 2px solid #3a3a3a;
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
+    border: 2px solid var(--color-border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--color-text-primary);
     font-size: 14px;
     font-family: 'Courier New', monospace;
     cursor: pointer;
     appearance: none;
     transition: all 0.3s;
-    box-shadow: 0 2px 0 #0a0a0a;
+    box-shadow: 0 2px 0 var(--color-shadow-dark);
 }
 
 .dropdown-select:hover {
-    border-color: #4ade80;
-    background: linear-gradient(145deg, #2f2f2f, #242424);
+    border-color: var(--color-border-focus);
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
 }
 
 .dropdown-select:focus {
     outline: none;
-    border-color: #4ade80;
-    box-shadow: 0 2px 0 #0a0a0a, 0 0 15px rgba(74, 222, 128, 0.3);
+    border-color: var(--color-border-focus);
+    box-shadow: 0 2px 0 var(--color-shadow-dark), 0 0 15px rgba(74, 222, 128, 0.3);
 }
 
 .dropdown::after {
@@ -523,17 +317,49 @@ function closeKeyEdit() {
     right: 38px;
     top: 51px;
     transform: translateY(-50%);
-    color: #4ade80;
+    color: var(--color-border-focus);
     pointer-events: none;
     font-size: 12px;
 }
 
 option {
-    background-color: #1f1f1f;
+    background-color: var(--color-bg-secondary);
+}
+
+.hb {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.hb-slot {
+    width: 50px;
+    height: 50px;
+    padding: 6px;
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.3s;
+    box-shadow: 0 2px 0 var(--color-shadow-dark);
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.hb-slot:hover {
+    border-color: var(--color-border-focus);
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
 }
 
 .keyboard {
-    background: #1a1a1a;
+    background: var(--color-bg-secondary);
     border-radius: 15px;
     padding: 20px;
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -546,9 +372,60 @@ option {
     justify-content: center;
 }
 
+.bind-options {
+    display: grid;
+    /* flex-direction: column; */
+    grid-template-columns: repeat(4, calc(60vw / 4 - 16px));
+    gap: 8px;
+    max-height: 40vh;
+    max-width: 60vw;
+}
+
+.bind-option {
+    padding: 2px 4px;
+    margin: 3px 0;
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    appearance: none;
+    transition: all 0.3s;
+    box-shadow: 0 2px 0 var(--color-shadow-dark);
+
+    flex: 1 1 calc(25% - 1rem);
+    /* max-width: ; */
+}
+
+.hl-colors {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.hl-color {
+    width: 30px;
+    height: 30px;
+    border-radius: 1000px;
+    border: 2px solid var(--color-border);
+    cursor: pointer;
+    box-shadow: 0 2px 0 var(--color-shadow-dark);
+    transition: all 0.3s;
+}
+
+/* .bind-option:hover {
+    border-color: var(--color-border-focus);
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
+} */
+
+.bind-option.selected {
+    border-color: #eee !important;
+}
+
 .key {
-    background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-    border: 2px solid #3a3a3a;
+    background: linear-gradient(145deg, var(--color-bg-input), var(--color-bg-input));
+    border: 2px solid var(--color-border);
     border-radius: 6px;
     width: 50px;
     height: 50px;
@@ -556,12 +433,13 @@ option {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: #ffffff;
     font-weight: bold;
     font-size: 14px;
     position: relative;
-    box-shadow: 0 3px 0 #0a0a0a;
+    box-shadow: 0 3px 0 var(--color-shadow-dark);
     transition: all 0.2s;
+    cursor: pointer;
 }
 
 .key.key-m {
@@ -577,12 +455,12 @@ option {
 }
 
 .key.key-space {
-    width: 329px;
+    width: 305px;
 }
 
 .key:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 0 #0a0a0a;
+    box-shadow: 0 5px 0 var(--color-shadow-dark);
 }
 
 .key-icon {
@@ -601,7 +479,7 @@ option {
 
 .key-action {
     font-size: 9px;
-    color: #eee;
+    color: #ffffff;
     margin-top: 2px;
     text-transform: uppercase;
 }
@@ -611,113 +489,234 @@ option {
 }
 
 /* Colored Keys */
-.key.green {
+.green {
     background: linear-gradient(145deg, #22c55e, #16a34a);
     border-color: #4ade80;
     box-shadow: 0 3px 0 #166534, 0 0 20px rgba(74, 222, 128, 0.4);
 }
 
-.key.green:hover {
+.green:hover {
     box-shadow: 0 5px 0 #166534, 0 0 25px rgba(74, 222, 128, 0.6);
 }
 
-.key.blue {
+.blue {
     background: linear-gradient(145deg, #3b82f6, #2563eb);
     border-color: #60a5fa;
     box-shadow: 0 3px 0 #1e40af, 0 0 20px rgba(96, 165, 250, 0.4);
 }
 
-.key.blue:hover {
+.blue:hover {
     box-shadow: 0 5px 0 #1e40af, 0 0 25px rgba(96, 165, 250, 0.6);
 }
 
-.key.purple {
+.purple {
     background: linear-gradient(145deg, #a855f7, #9333ea);
     border-color: #c084fc;
     box-shadow: 0 3px 0 #7e22ce, 0 0 20px rgba(192, 132, 252, 0.4);
 }
 
-.key.purple:hover {
+.purple:hover {
     box-shadow: 0 5px 0 #7e22ce, 0 0 25px rgba(192, 132, 252, 0.6);
 }
 
-.key.red {
+.red {
     background: linear-gradient(145deg, #ef4444, #dc2626);
     border-color: #f87171;
     box-shadow: 0 3px 0 #991b1b, 0 0 20px rgba(248, 113, 113, 0.4);
 }
 
-.key.red:hover {
+.red:hover {
     box-shadow: 0 5px 0 #991b1b, 0 0 25px rgba(248, 113, 113, 0.6);
 }
 
-.key.yellow {
+.yellow {
     background: linear-gradient(145deg, #eab308, #ca8a04);
     border-color: #facc15;
     box-shadow: 0 3px 0 #854d0e, 0 0 20px rgba(250, 204, 21, 0.4);
 }
 
-.key.yellow:hover {
+.yellow:hover {
     box-shadow: 0 5px 0 #854d0e, 0 0 25px rgba(250, 204, 21, 0.6);
 }
 
-.key.cyan {
+.cyan {
     background: linear-gradient(145deg, #06b6d4, #0891b2);
     border-color: #22d3ee;
     box-shadow: 0 3px 0 #155e75, 0 0 20px rgba(34, 211, 238, 0.4);
 }
 
-.key.cyan:hover {
+.cyan:hover {
     box-shadow: 0 5px 0 #155e75, 0 0 25px rgba(34, 211, 238, 0.6);
 }
 
-.key.orange {
+.orange {
     background: linear-gradient(145deg, #f97316, #ea580c);
     border-color: #fb923c;
     box-shadow: 0 3px 0 #9a3412, 0 0 20px rgba(251, 146, 60, 0.4);
 }
 
-.key.orange:hover {
+.orange:hover {
     box-shadow: 0 5px 0 #9a3412, 0 0 25px rgba(251, 146, 60, 0.6);
 }
 
-.key.pink {
+.pink {
     background: linear-gradient(145deg, #ec4899, #db2777);
     border-color: #f472b6;
     box-shadow: 0 3px 0 #9f1239, 0 0 20px rgba(244, 114, 182, 0.4);
 }
 
-.key.pink:hover {
+.pink:hover {
     box-shadow: 0 5px 0 #9f1239, 0 0 25px rgba(244, 114, 182, 0.6);
 }
 
-.key.emerald {
+.emerald {
     background: linear-gradient(145deg, #10b981, #059669);
     border-color: #34d399;
     box-shadow: 0 3px 0 #065f46, 0 0 20px rgba(52, 211, 153, 0.4);
 }
 
-.key.emerald:hover {
+.emerald:hover {
     box-shadow: 0 5px 0 #065f46, 0 0 25px rgba(52, 211, 153, 0.6);
 }
 
-.key.indigo {
+.indigo {
     background: linear-gradient(145deg, #6366f1, #4f46e5);
     border-color: #818cf8;
     box-shadow: 0 3px 0 #3730a3, 0 0 20px rgba(129, 140, 248, 0.4);
 }
 
-.key.indigo:hover {
+.indigo:hover {
     box-shadow: 0 5px 0 #3730a3, 0 0 25px rgba(129, 140, 248, 0.6);
 }
 
-.key.grey {
+.grey {
     background: linear-gradient(145deg, #94a3b8, #64748b);
     border-color: #cbd5e1;
     box-shadow: 0 3px 0 #475569, 0 0 20px rgba(129, 140, 248, 0.4);
 }
 
-.key.grey:hover {
+.grey:hover {
     box-shadow: 0 5px 0 #475569, 0 0 25px rgba(129, 140, 248, 0.6);
 }
+
+/* Key Highlights */
+.hl-green {
+    background: linear-gradient(145deg, #22c55e66, #16a34a66);
+    border-color: #4ade80;
+    /* box-shadow: 0 3px 0 #166534, 0 0 20px rgba(74, 222, 128, 0.4); */
+}
+
+.hl-green:hover {
+    box-shadow: 0 5px 0 #166534, 0 0 25px rgba(74, 222, 128, 0.6);
+}
+
+.hl-blue {
+    background: linear-gradient(145deg, #3b82f666, #2563eb66);
+    border-color: #60a5fa;
+    /* box-shadow: 0 3px 0 #1e40af, 0 0 20px rgba(96, 165, 250, 0.4); */
+}
+
+.hl-blue:hover {
+    box-shadow: 0 5px 0 #1e40af, 0 0 25px rgba(96, 165, 250, 0.6);
+}
+
+.hl-purple {
+    background: linear-gradient(145deg, #a855f766, #9333ea66);
+    border-color: #c084fc;
+    /* box-shadow: 0 3px 0 #7e22ce, 0 0 20px rgba(192, 132, 252, 0.4); */
+}
+
+.hl-purple:hover {
+    box-shadow: 0 5px 0 #7e22ce, 0 0 25px rgba(192, 132, 252, 0.6);
+}
+
+.hl-red {
+    background: linear-gradient(145deg, #ef444466, #dc262666);
+    border-color: #f87171;
+    /* box-shadow: 0 3px 0 #991b1b, 0 0 20px rgba(248, 113, 113, 0.4); */
+}
+
+.hl-red:hover {
+    box-shadow: 0 5px 0 #991b1b, 0 0 25px rgba(248, 113, 113, 0.6);
+}
+
+.hl-yellow {
+    background: linear-gradient(145deg, #eab30866, #ca8a0466);
+    border-color: #facc15;
+    /* box-shadow: 0 3px 0 #854d0e, 0 0 20px rgba(250, 204, 21, 0.4); */
+}
+
+.hl-yellow:hover {
+    box-shadow: 0 5px 0 #854d0e, 0 0 25px rgba(250, 204, 21, 0.6);
+}
+
+.hl-cyan {
+    background: linear-gradient(145deg, #06b6d466, #0891b266);
+    border-color: #22d3ee;
+    /* box-shadow: 0 3px 0 #155e75, 0 0 20px rgba(34, 211, 238, 0.4); */
+}
+
+.hl-cyan:hover {
+    box-shadow: 0 5px 0 #155e75, 0 0 25px rgba(34, 211, 238, 0.6);
+}
+
+.hl-orange {
+    background: linear-gradient(145deg, #f9731666, #ea580c66);
+    border-color: #fb923c;
+    /* box-shadow: 0 3px 0 #9a3412, 0 0 20px rgba(251, 146, 60, 0.4); */
+}
+
+.hl-orange:hover {
+    box-shadow: 0 5px 0 #9a3412, 0 0 25px rgba(251, 146, 60, 0.6);
+}
+
+.hl-pink {
+    background: linear-gradient(145deg, #ec489966, #db277766);
+    border-color: #f472b6;
+    /* box-shadow: 0 3px 0 #9f1239, 0 0 20px rgba(244, 114, 182, 0.4); */
+}
+
+.hl-pink:hover {
+    box-shadow: 0 5px 0 #9f1239, 0 0 25px rgba(244, 114, 182, 0.6);
+}
+
+.hl-emerald {
+    /* background: linear-gradient(145deg, #10b981, #059669); */
+    border-color: #34d399;
+    /* box-shadow: 0 3px 0 #065f46, 0 0 20px rgba(52, 211, 153, 0.4); */
+}
+
+.hl-emerald:hover {
+    box-shadow: 0 5px 0 #065f46, 0 0 25px rgba(52, 211, 153, 0.6);
+}
+
+.hl-indigo {
+    /* background: linear-gradient(145deg, #6366f1, #4f46e5); */
+    border-color: #818cf8;
+    /* box-shadow: 0 3px 0 #3730a3, 0 0 20px rgba(129, 140, 248, 0.4); */
+}
+
+.hl-indigo:hover {
+    box-shadow: 0 5px 0 #3730a3, 0 0 25px rgba(129, 140, 248, 0.6);
+}
+
+.hl-grey {
+    /* background: linear-gradient(145deg, #94a3b8, #64748b); */
+    border-color: #cbd5e1;
+    /* box-shadow: 0 3px 0 #475569, 0 0 20px rgba(129, 140, 248, 0.4); */
+}
+
+.hl-grey:hover {
+    box-shadow: 0 5px 0 #475569, 0 0 25px rgba(129, 140, 248, 0.6);
+}
+
+/* :root[data-theme='light'] .key.grey {
+    background: linear-gradient(145deg, #555555, #4a4a4a);
+    border-color: #5a5a5a;
+    box-shadow: 0 3px 0 #333333, 0 0 20px rgba(74, 174, 128, 0.2);
+}
+
+:root[data-theme='light'] .key.grey:hover {
+    box-shadow: 0 5px 0 #333333, 0 0 25px rgba(74, 174, 128, 0.3);
+} */
 </style>

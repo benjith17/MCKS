@@ -50,6 +50,7 @@ const showPopover = ref(false);
 <style scoped>
 h2 {
     margin-bottom: 0;
+    color: var(--color-text-primary);
 }
 
 .meta-container {
@@ -70,57 +71,43 @@ h2 {
 .tag {
     padding: 5px 7px;
     border-radius: 100px;
-
     text-transform: uppercase;
-    display: inline-flex;       /* makes vertical centring reliable */
+    display: inline-flex;
     flex-direction: row;
-    align-items: center;        /* vertically centres the text */
-    line-height: 1;             /* removes excessive vertical space */
+    align-items: center;
+    line-height: 1;
     font-size: 0.85rem;
-    font-weight: 800;           /* optional */
-
+    font-weight: 800;
     min-width: max-content;
-
     cursor: pointer;
+    color: #ffffff;
 }
 
 input {
-    background: #1a1a1a;
+    background: var(--color-bg-secondary);
     border-radius: 15px;
     padding: 10px;
-
-    /* Recessed inner shadow you provided */
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
-
-    /* Extra details for polish */
-    border: 2px solid #3a3a3a;
-    color: #e0e0e0; /* comfortable contrast on a dark background */
+    border: 2px solid var(--color-border);
+    color: var(--color-text-primary);
     font-size: 1rem;
     line-height: 1.4;
     font-family: "Segoe UI", Arial, sans-serif;
-
-    /* Smooth interaction */
     transition: border 0.2s ease, box-shadow 0.2s ease;
-
-    /* Make it expand nicely in layouts */
     width: 100%;
     box-sizing: border-box;
-
-    /* Optional: slight transparency for a modern feel */
     backdrop-filter: blur(2px);
 }
 
 input:focus-visible {
     outline: none;
-
-    border-color: #4ade80;
+    border-color: var(--color-border-focus);
     border-width: 2px;
-    /* background: linear-gradient(145deg, #2f2f2f, #242424); */
 }
 
 .settings-section {
-    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-    border: 2px solid #2a2a2a;
+    background: linear-gradient(145deg, var(--color-bg-secondary), var(--color-bg-tertiary));
+    border: 2px solid var(--color-border);
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 30px;
@@ -136,15 +123,15 @@ input:focus-visible {
     width: 50px;
     height: 50px;
     padding: 12px 12px 12px 12px;
-    background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-    border: 2px solid #3a3a3a;
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
+    border: 2px solid var(--color-border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--color-text-primary);
     font-size: 14px;
     cursor: pointer;
     appearance: none;
     transition: all 0.3s;
-    box-shadow: 0 2px 0 #0a0a0a;
+    box-shadow: 0 2px 0 var(--color-shadow-dark);
     display: flex;
     align-content: center;
     align-items: center;
@@ -156,10 +143,9 @@ input:focus-visible {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-color: #1f1f1fb3;
+    background-color: var(--color-overlay);
     top: 0;
     left: 0;
-
     z-index: 1;
 }
 
