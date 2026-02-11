@@ -208,7 +208,7 @@ async function copyLink() {
             Download Image
         </button>
     </div>
-    <button @click="displaySettings.viewMode=true;displaySettings.captureMode=true;">cap</button>
+    <!-- <button @click="displaySettings.viewMode=true;displaySettings.captureMode=true;">cap</button> -->
 </template>
 
 <style scoped>
