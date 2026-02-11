@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { keyboardData, displaySettings, themeSettings, initializeTheme, setTheme, gameList, gameData } from './store';
 import { toPng } from 'html-to-image';
 
@@ -88,11 +88,17 @@ let captureArea = ref<HTMLElement | null>(null);
 async function capture() {
     displaySettings.viewMode = true;
     displaySettings.captureMode = true;
+    await nextTick();
     if (!captureArea.value) return;
     try {
         const dataUrl = await toPng(captureArea.value, {
-            // optional config: width,height, backgroundColor, etc
+            skipFonts: true,
+            filter: (node) => {
+                if (node instanceof HTMLElement && node.style.display === 'none') return false;
+                return true;
+            },
         });
+        console.log(dataUrl);
         // download:
         const link = document.createElement('a');
         link.download = keyboardData.name + '.png';
@@ -149,6 +155,10 @@ async function copyLink() {
         <Metadata />
         <Keyboard />
         <Hotbar />
+        <p v-show="displaySettings.captureMode" class="watermark">
+            Made with <img src="/icon.svg" width="15"></img> MCKS <span
+                style="color: #aaaaaa">(https://mcks-cie.pages.dev/)</span>
+        </p>
         <div class="button-group">
             <button @click="share()" v-if="displaySettings.captureMode == false">Share</button>
             <button @click="toggleTheme()" class="theme-toggle" title="Toggle light/dark mode"
@@ -157,10 +167,6 @@ async function copyLink() {
                 <span v-else>☀️</span>
             </button>
         </div>
-        <p v-if="displaySettings.captureMode">
-            Made with <img src="/icon.svg" width="15"></img> MCKS <span
-                style="color: #aaaaaa">(https://mcks-cie.pages.dev/)</span>
-        </p>
     </div>
     <!-- <pre>
         {{ keyboardData }}
@@ -202,6 +208,7 @@ async function copyLink() {
             Download Image
         </button>
     </div>
+    <button @click="displaySettings.viewMode=true;displaySettings.captureMode=true;">cap</button>
 </template>
 
 <style scoped>
@@ -293,5 +300,10 @@ async function copyLink() {
 .gamebtn:hover {
     background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
     border: 2px solid var(--color-border-hover);
+}
+
+.watermark {
+    font-size: 13pt;
+    margin: 0;
 }
 </style>

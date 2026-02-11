@@ -67,7 +67,7 @@ function keybindForHotbar(n: number) {
     border: 2px solid var(--color-border);
     border-radius: 12px;
     padding: 25px;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
     display: flex;
     gap: 8px;
 }

@@ -127,7 +127,8 @@ function formatKeyOptionData() {
 
             </div>
             <div class="dropdown">
-                <select v-model="keyboardData.keyboard" class="dropdown-select">
+                <select v-model="keyboardData.keyboard" class="dropdown-select"
+                    v-if="displaySettings.captureMode == false">
                     <option v-for="opt in keyboardOptions" :value="opt.id">{{ opt.name }}</option>
                 </select>
             </div>
@@ -153,7 +154,8 @@ function formatKeyOptionData() {
                 </div>
             </div>
             <div class="dropdown">
-                <select v-model="keyboardData.mouse" class="dropdown-select">
+                <select v-model="keyboardData.mouse" class="dropdown-select"
+                    v-if="displaySettings.captureMode == false">
                     <option v-for="opt in mouseOptions" :value="opt.id">{{ opt.name }}</option>
                 </select>
             </div>
@@ -191,8 +193,7 @@ function formatKeyOptionData() {
             <div class="hb">
                 <div class="slot-container" v-for="slot in Array.from({ length: hotbarSize || 9 }, (_, i) => i)">
                     <div class="spacer" :hidden="!(gameData?.hotbarSpacers as any)?.includes(slot)"></div>
-                    <div class="hb-slot"
-                        @click="keyboardData.keys[selectedKey] = 'hb_' + (slot + 1); closeKeyEdit()">
+                    <div class="hb-slot" @click="keyboardData.keys[selectedKey] = 'hb_' + (slot + 1); closeKeyEdit()">
                         <img :src="'/' + items.find(i => i.id == keyboardData.hotbar[slot])?.icon">
                     </div>
                 </div>
