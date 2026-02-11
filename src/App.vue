@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { keyboardData, displaySettings, themeSettings, initializeTheme, setTheme } from './store';
+import { keyboardData, displaySettings, themeSettings, initializeTheme, setTheme, gameList, gameData } from './store';
 import { toPng } from 'html-to-image';
 
 import Keyboard from './components/Keyboard.vue';
@@ -22,6 +22,9 @@ onMounted(() => {
             keyboardData.tags = urlData.tags;
             keyboardData.keys = urlData.keys;
             keyboardData.hotbar = urlData.hotbar;
+            keyboardData.keyboard = urlData.keyboard;
+            keyboardData.mouse = urlData.mouse;
+            keyboardData.game = urlData.game;
             return;
         } catch { }
     }
@@ -29,21 +32,28 @@ onMounted(() => {
     keyboardData.name = "Untitled Layout";
 
     keyboardData.keys = {
-        w: "move_forward",
-        a: "move_left",
-        s: "move_backward",
-        d: "move_right"
-    }
+        w: 'move_forward',
+        a: 'move_left',
+        s: 'move_backward',
+        d: 'move_right',
+        lmb: 'int_attack',
+        rmb: 'int_use',
+        space: 'move_jump',
+    };
 
     keyboardData.hotbar = ['none', 'none', 'none', 'none', 'none', 'none', 'none', 'none', 'none']
-});
 
-const displaySharePopup = ref(false);
+    keyboardData.keyboard = 'win65';
+    keyboardData.mouse = 'gaming';
+    keyboardData.game = 'minecraft';
+});
 
 function toggleTheme() {
     const newTheme = themeSettings.mode === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
 }
+
+const displaySharePopup = ref(false);
 
 function share() {
     displaySharePopup.value = true;
@@ -51,6 +61,26 @@ function share() {
 
 function closeShare() {
     displaySharePopup.value = false;
+}
+
+const displayGameSelector = ref(false);
+
+function selectGame() {
+    displayGameSelector.value = true;
+}
+
+function closeGameSelector() {
+    displayGameSelector.value = false;
+}
+
+function resetKeybinds() {
+    const hotbarLength = gameData.value?.hotbarSize || 9;
+
+    keyboardData.keys = { ...gameData.value?.defaultBinds };
+    keyboardData.hotbar = Array(hotbarLength).fill('none');
+    if (gameData.value?.canEditHotbar == false) {
+        keyboardData.hotbar = gameData.value?.hotbarItems.map(i => i.id).slice(0, hotbarLength) || [];
+    }
 }
 
 let captureArea = ref<HTMLElement | null>(null);
@@ -93,13 +123,18 @@ async function copyLink() {
 
 <template>
     <nav>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.5rem 0.75rem;">
-            <a href="/" style="display:inline-flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;">
-                <img src="/pick.svg" width="25" height="25"></img>
-                <span style="font-weight:700;font-size:1rem;line-height:1;">MC Keybinds Share</span>
-            </a>
-            
-            <a href="https://github.com/benjith17/MCKS" target="_blank" rel="noopener noreferrer" style="margin-left:auto;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:inherit;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.75rem;">
+            <div class="game-switch-btn">
+                <img :src="'/' + gameData?.icon" width="25" height="25" @click="selectGame()">
+                <i class="bi bi-caret-down-fill" @click="selectGame()"></i>
+            </div>
+            <!-- <a href="/"
+                style="display:inline-flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;margin-left:1rem;"> -->
+                <span style="font-weight:700;font-size:1rem;line-height:1;margin-left:1rem;">{{ gameData?.name }}</span>
+            <!-- </a> -->
+
+            <a href="https://github.com/benjith17/MCKS" target="_blank" rel="noopener noreferrer"
+                style="margin-left:auto;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;color:inherit;">
                 <i class="bi bi-github"></i>
                 <span style="font-weight:600;font-size:0.95rem;">GitHub</span>
             </a>
@@ -116,13 +151,15 @@ async function copyLink() {
         <Hotbar />
         <div class="button-group">
             <button @click="share()" v-if="displaySettings.captureMode == false">Share</button>
-            <button @click="toggleTheme()" class="theme-toggle" title="Toggle light/dark mode" v-if="displaySettings.captureMode == false">
+            <button @click="toggleTheme()" class="theme-toggle" title="Toggle light/dark mode"
+                v-if="displaySettings.captureMode == false">
                 <span v-if="themeSettings.mode === 'dark'">🌙</span>
                 <span v-else>☀️</span>
             </button>
         </div>
         <p v-if="displaySettings.captureMode">
-            Made with <img src="/pick.svg" width="15"></img> MCKS <span style="color: #aaaaaa">(https://mcks-cie.pages.dev/)</span>
+            Made with <img src="/icon.svg" width="15"></img> MCKS <span
+                style="color: #aaaaaa">(https://mcks-cie.pages.dev/)</span>
         </p>
     </div>
     <!-- <pre>
@@ -130,10 +167,28 @@ async function copyLink() {
     </pre> -->
 
     <p>
-        Copyright &copy; benjith17 2025<br/>
-        Some icons from <a href="https://mctiers.com/" target="_blank">MCTiers</a>. <br/>
+        Copyright &copy; benjith17 2025<br />
+        Some icons from <a href="https://mctiers.com/" target="_blank">MCTiers</a>. <br />
         If you are from MCTiers and want me to stop using your icons then open an issue on GH.
     </p>
+
+
+    <div @click="closeGameSelector()" class="cover" :style="{ display: displayGameSelector ? '' : 'none' }">
+        <div class="game-popover" :style="{ display: displayGameSelector ? '' : 'none' }" @click.stop>
+            <button v-for="game in gameList" class="gamebtn"
+                @click="keyboardData.game = game.id; resetKeybinds(); closeGameSelector()">
+                <img :src="'/' + game.icon" width="20" height="20">
+                {{ game.name }}
+            </button>
+            <div>
+                <i class="bi bi-exclamation-circle"></i>
+                Switching games will clear your current keybinds and hotbar.<br />
+                <i class="bi bi-controller"></i>
+                Can't find your game? Open an issue on <a href="https://github.com/benjith17/MCKS/issues"
+                    target="_blank">GitHub</a> and I'll add it!<br />
+            </div>
+        </div>
+    </div>
 
 
     <div @click="closeShare()" class="cover" :style="{ display: displaySharePopup ? '' : 'none' }"></div>
@@ -180,6 +235,9 @@ async function copyLink() {
     left: 0;
 
     z-index: 1;
+
+    display: flex;
+    justify-content: center;
 }
 
 .share-popover {
@@ -191,5 +249,49 @@ async function copyLink() {
     justify-content: center;
     gap: 10px;
     z-index: 2;
+}
+
+.game-popover {
+    z-index: 2;
+    position: absolute;
+    top: 50px;
+    flex-direction: row;
+    max-width: 514px;
+    background: linear-gradient(145deg, var(--color-bg-secondary), var(--color-bg-tertiary));
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    gap: 8px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    margin: 100px;
+    justify-content: center;
+}
+
+.game-switch-btn {
+    display: flex;
+    justify-content: center;
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    padding: 3px 4px;
+}
+
+.gamebtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, var(--color-bg-input), var(--color-bg-input));
+    border: 2px solid var(--color-border);
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.gamebtn:hover {
+    background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
+    border: 2px solid var(--color-border-hover);
 }
 </style>

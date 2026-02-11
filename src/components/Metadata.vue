@@ -1,30 +1,30 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { keyboardData, allTags, displaySettings } from '../store';
-import type { tag } from '../types';
+// import { ref } from 'vue';
+import { keyboardData, /*allTags,*/ displaySettings } from '../store';
+// import type { Tag } from '../types';
 
-function addTag(t: tag) {
-    keyboardData.tags.push(t);
-}
+// function addTag(t: Tag) {
+//     keyboardData.tags.push(t);
+// }
 
-function removeTag(t: string) {
-    if (displaySettings.viewMode) return;
-    keyboardData.tags = keyboardData.tags.filter(e => e.id != t);
-}
+// function removeTag(t: string) {
+//     if (displaySettings.viewMode) return;
+//     keyboardData.tags = keyboardData.tags.filter(e => e.id != t);
+// }
 
-function showAddTag() {
-    showPopover.value = true;
-}
+// function showAddTag() {
+//     showPopover.value = true;
+// }
 
-function closeAddTag() {
-    showPopover.value = false;
-}
+// function closeAddTag() {
+//     showPopover.value = false;
+// }
 
 function disableViewMode() {
     window.location.pathname = '';
 }
 
-const showPopover = ref(false);
+// const showPopover = ref(false);
 </script>
 
 <template>
@@ -34,16 +34,16 @@ const showPopover = ref(false);
 
         <input v-model="keyboardData.name" v-if="displaySettings.viewMode == false">
 
-        <div class="tags">
+        <!-- <div class="tags">
             <div v-for="tag in keyboardData.tags" @click="removeTag(tag.id)" class="tag" :style="{backgroundColor: tag.color}">{{ tag.name }}</div>
             <div @click="showAddTag()" class="tag" style="background-color: #777;" v-if="displaySettings.viewMode == false">+</div>
-        </div>
+        </div> -->
     </div>
 
-    <div @click="closeAddTag()" class="cover" :style="{ display: showPopover ? '' : 'none' }"></div>
+    <!-- <div @click="closeAddTag()" class="cover" :style="{ display: showPopover ? '' : 'none' }"></div>
     <div class="popover settings-section" :style="{ display: showPopover ? '' : 'none' }">
         <div v-for="tag in allTags" @click="addTag(tag)" class="tag" :style="{backgroundColor: tag.color}">{{ tag.name }}</div>
-    </div>
+    </div> -->
 
 </template>
 

@@ -1,113 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { keyboardData, displaySettings } from '../store';
+import { computed, ref } from 'vue';
+import { keyboardData, displaySettings, keyboardKeys, keyboardOptions, mouseOptions, mouseButtons, gameData } from '../store';
 
-const keys = [
-    [
-        { id: 'backtick', text: '` ¬', size: 1 },
-        { id: '_1', text: '1', size: 1 },
-        { id: '_2', text: '2', size: 1 },
-        { id: '_3', text: '3', size: 1 },
-        { id: '_4', text: '4', size: 1 },
-        { id: '_5', text: '5', size: 1 },
-        { id: '_6', text: '6', size: 1 },
-        { id: '_7', text: '7', size: 1 },
-        { id: '_8', text: '8', size: 1 },
-        { id: '_9', text: '9', size: 1 },
-        { id: '_0', text: '0', size: 1 },
-        { id: 'minus', text: '- _', size: 1 },
-        { id: 'equals', text: '= +', size: 1 },
-        { id: 'backspace', text: 'BKSP', size: 2 }
+const keybinds = computed(() => {
+    return gameData.value?.keys || [];
+})
 
-    ],
-    [
-        { id: 'tab', text: 'TAB', size: 2 },
-        { id: 'q', text: 'Q', size: 1 },
-        { id: 'w', text: 'W', size: 1 },
-        { id: 'e', text: 'E', size: 1 },
-        { id: 'r', text: 'R', size: 1 },
-        { id: 't', text: 'T', size: 1 },
-        { id: 'y', text: 'Y', size: 1 },
-        { id: 'u', text: 'U', size: 1 },
-        { id: 'i', text: 'I', size: 1 },
-        { id: 'o', text: 'O', size: 1 },
-        { id: 'p', text: 'P', size: 1 },
-        { id: 'bracketopen', text: '[ {', size: 1 },
-        { id: 'bracketclose', text: '] }', size: 1 },
-        { id: 'hash', text: '# ~', size: 1 }
-    ],
-    [
-        { id: 'caps', text: 'CAPS', size: 3 },
-        { id: 'a', text: 'A', size: 1 },
-        { id: 's', text: 'S', size: 1 },
-        { id: 'd', text: 'D', size: 1 },
-        { id: 'f', text: 'F', size: 1 },
-        { id: 'g', text: 'G', size: 1 },
-        { id: 'h', text: 'H', size: 1 },
-        { id: 'j', text: 'J', size: 1 },
-        { id: 'k', text: 'K', size: 1 },
-        { id: 'l', text: 'L', size: 1 },
-        { id: 'semicolon', text: '; :', size: 1 },
-        { id: 'apostrophe', text: "' @", size: 1 },
-        { id: 'enter', text: 'ENTER', size: 2 }
-    ],
-    [
-        { id: 'shiftleft', text: 'SHIFT', size: 2 },
-        { id: 'backslash', text: '\\', size: 1 },
-        { id: 'z', text: 'Z', size: 1 },
-        { id: 'x', text: 'X', size: 1 },
-        { id: 'c', text: 'C', size: 1 },
-        { id: 'v', text: 'V', size: 1 },
-        { id: 'b', text: 'B', size: 1 },
-        { id: 'n', text: 'N', size: 1 },
-        { id: 'm', text: 'M', size: 1 },
-        { id: 'comma', text: ',', size: 1 },
-        { id: 'period', text: '.', size: 1 },
-        { id: 'slash', text: '/', size: 1 },
-        { id: 'shiftright', text: 'SHIFT', size: 3 }
-    ],
-    [
-        { id: 'ctrlleft', text: 'CTRL', size: 2 },
-        { id: 'winleft', text: 'WIN', size: 2 },
-        { id: 'altleft', text: 'ALT', size: 2 },
-        { id: 'space', text: 'SPACE', size: 5 },
-        { id: 'altright', text: 'ALT GR', size: 2 },
-        { id: 'menu', text: 'MENU', size: 2 },
-        { id: 'ctrlright', text: 'CTRL', size: 2 }
-    ]
-]
+const items = computed(() => {
+    return gameData.value?.hotbarItems || [];
+})
 
-const keybinds: {
-    id: string,
-    label: string,
-    short?: string
-}[] = [
-        // { id: '', label: "Unbound" },
-        { id: 'move_forward', label: "Move Forward", short: "forward" },
-        { id: 'move_backward', label: "Move Backward", short: "back" },
-        { id: 'move_left', label: "Strafe Left", short: "left" },
-        { id: 'move_right', label: "Strafe Right", short: "right" },
-        { id: 'move_jump', label: "Jump" },
-        { id: 'move_sprint', label: "Sprint" },
-        { id: 'move_sneak', label: "Sneak" },
-
-        { id: 'inv_open', label: "Inventory", short: "inv" },
-        { id: 'inv_offhand', label: "Off Hand" },
-        { id: 'inv_drop', label: "Drop Item", short: "drop" },
-
-        { id: 'misc_playerlist', label: "Player List", short: "list" },
-        { id: 'misc_zoom', label: "Zoom" },
-
-        // { id: 'hb_1', label: "Slot 1" },
-        // { id: 'hb_2', label: "Slot 2" },
-        // { id: 'hb_3', label: "Slot 3" },
-        // { id: 'hb_4', label: "Slot 4" },
-        // { id: 'hb_5', label: "Slot 5" },
-        // { id: 'hb_6', label: "Slot 6" },
-        // { id: 'hb_7', label: "Slot 7" },
-        // { id: 'hb_8', label: "Slot 8" },
-        // { id: 'hb_9', label: "Slot 9" },
-    ]
+const hotbarSize = computed(() => {
+    return gameData.value?.hotbarSize || 9;
+})
 
 const highlights = [
     'green',
@@ -132,16 +37,13 @@ function getKeyColor(k: string): string {
 
 function getColor(k: string) {
     const group = k.split('_')[0];
-    if (group == 'move') return 'blue';
-    if (group == 'inv') return 'purple';
-    if (group == 'hb') return 'green';
-    if (group == 'misc') return 'grey';
+    if (group == 'hb') return gameData.value?.hotbarKeysColor ?? '';
 
     if (group == 'hl') {
         return 'hl-' + k.split('_')[1];
     }
 
-    return ''
+    return gameData.value?.groups.find(g => g.id == group)?.color ?? '';
 }
 
 function getAction(k: string): string {
@@ -155,7 +57,7 @@ function getAction(k: string): string {
             if (item == 'none') return 'slot ' + (idx + 1).toString();
             return item;
         }
-        for (let i of keybinds) {
+        for (let i of keybinds.value) {
             if (i.id == key) return i.short || i.label;
         }
 
@@ -188,31 +90,74 @@ function closeKeyEdit() {
     showPopover.value = false;
 }
 
+function formatKeyOptionData() {
+    let formatted = [];
+    for (let group of gameData.value?.groups || []) {
+        let groupBinds = keybinds.value.filter(k => k.id.split('_')[0] == group.id);
+        formatted.push({ name: group.name, color: group.color, binds: groupBinds });
+    }
+    return formatted;
+}
 
 </script>
 
 <template>
     <!-- <pre style="text-align: left;">{{ data }}</pre> -->
 
-    <div class="keyboard">
+    <div class="row">
+        <div>
+            <div class="keyboard">
 
-        <div class="row" v-for="row in keys">
+                <div class="row" v-for="row in keyboardKeys">
 
-            <div @click="editKey(key.id, key.text)" @contextmenu.prevent="keyboardData.keys[key.id] = ''" class="key"
-                v-for="key in row" :class="getKeyColor(key.id),
-                    key.size == 2 ? 'key-m' : '',
-                    key.size == 3 ? 'key-l' : '',
-                    key.size == 4 ? 'key-xl' : '',
-                    key.size == 5 ? 'key-space' : ''
-                    ">
+                    <div @click="editKey(key.id, key.text)" @contextmenu.prevent="keyboardData.keys[key.id] = ''"
+                        class="key" v-for="key in row" :class="getKeyColor(key.id),
+                            key.size == 2 ? 'key-m' : '',
+                            key.size == 3 ? 'key-l' : '',
+                            key.size == 4 ? 'key-xl' : '',
+                            key.size == 5 ? 'key-space' : ''
+                            ">
 
-                <!-- <div class=" key-number">{{ getNumber(key.id) }}</div> -->
-                {{ key.text }}
-                <div class="key-action">{{ getAction(key.id) }}</div>
+                        <!-- <div class=" key-number">{{ getNumber(key.id) }}</div> -->
+                        {{ key.text }}
+                        <div class="key-action">{{ getAction(key.id) }}</div>
+                    </div>
+
+                </div>
+
             </div>
-
+            <div class="dropdown">
+                <select v-model="keyboardData.keyboard" class="dropdown-select">
+                    <option v-for="opt in keyboardOptions" :value="opt.id">{{ opt.name }}</option>
+                </select>
+            </div>
         </div>
+        <div>
+            <div class="mouse">
+                <div class="row" v-for="row in mouseButtons">
 
+                    <div @click="editKey(key.id, key.text)" @contextmenu.prevent="keyboardData.keys[key.id] = ''"
+                        class="key" v-for="key in row" :class="getKeyColor(key.id),
+                            key.size == 2 ? 'key-m' : '',
+                            key.size == 3 ? 'key-l' : '',
+                            key.size == 4 ? 'key-xl' : '',
+                            key.size == 5 ? 'key-space' : '',
+                            key.size == 6 ? 'mouse-btn' : ''
+                            ">
+
+                        <!-- <div class=" key-number">{{ getNumber(key.id) }}</div> -->
+                        {{ key.text }}
+                        <div class="key-action">{{ getAction(key.id) }}</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="dropdown">
+                <select v-model="keyboardData.mouse" class="dropdown-select">
+                    <option v-for="opt in mouseOptions" :value="opt.id">{{ opt.name }}</option>
+                </select>
+            </div>
+        </div>
     </div>
 
 
@@ -225,22 +170,37 @@ function closeKeyEdit() {
                 <div class="bind-option hl-red" @click="keyboardData.keys[selectedKey] = ''; closeKeyEdit()">
                     Unbind
                 </div>
-
-                <div v-for="keybind in keybinds" @click="keyboardData.keys[selectedKey] = keybind.id; closeKeyEdit()"
+                <!-- <div v-for="keybind in keybinds" @click="keyboardData.keys[selectedKey] = keybind.id; closeKeyEdit()"
                     class="bind-option" :class="'hl-' + getColor(keybind.id)" :data-tooltip="keybind.label">
                     {{ keybind.label }}
+                </div> -->
+                <!-- <pre>{{ keybinds }}</pre> -->
+            </div>
+
+            <div class="binds-category" v-for="group in formatKeyOptionData()" :key="group.name">
+                <div class="bind-group-label">{{ group.name }}</div>
+                <div class="bind-options">
+                    <div v-for="keybind in group.binds"
+                        @click="keyboardData.keys[selectedKey] = keybind.id; closeKeyEdit()" class="bind-option"
+                        :class="'hl-' + getColor(keybind.id)" :data-tooltip="keybind.label">
+                        {{ keybind.label }}
+                    </div>
                 </div>
             </div>
 
             <div class="hb">
-                <div v-for="slot in [0, 1, 2, 3, 4, 5, 6, 7, 8]" class="hb-slot"
-                    @click="keyboardData.keys[selectedKey] = 'hb_' + (slot + 1); closeKeyEdit()">
-                    <img :src="'/' +  keyboardData.hotbar[slot] + '.svg'">
+                <div class="slot-container" v-for="slot in Array.from({ length: hotbarSize || 9 }, (_, i) => i)">
+                    <div class="spacer" :hidden="!(gameData?.hotbarSpacers as any)?.includes(slot)"></div>
+                    <div class="hb-slot"
+                        @click="keyboardData.keys[selectedKey] = 'hb_' + (slot + 1); closeKeyEdit()">
+                        <img :src="'/' + items.find(i => i.id == keyboardData.hotbar[slot])?.icon">
+                    </div>
                 </div>
             </div>
 
             <div class="hl-colors">
-                <div class="hl-color" v-for="hlColor in highlights" :class="'hl-' + hlColor" @click="keyboardData.keys[selectedKey] = 'hl_'+hlColor; closeKeyEdit()"></div>
+                <div class="hl-color" v-for="hlColor in highlights" :class="'hl-' + hlColor"
+                    @click="keyboardData.keys[selectedKey] = 'hl_' + hlColor; closeKeyEdit()"></div>
             </div>
         </div>
 
@@ -286,7 +246,8 @@ function closeKeyEdit() {
 }
 
 .dropdown-select {
-    width: 100%;
+    margin: 15px;
+    width: 200px;
     padding: 12px 40px 12px 15px;
     background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
     border: 2px solid var(--color-border);
@@ -311,16 +272,13 @@ function closeKeyEdit() {
     box-shadow: 0 2px 0 var(--color-shadow-dark), 0 0 15px rgba(74, 222, 128, 0.3);
 }
 
-.dropdown::after {
+/* .dropdown::after {
     content: '▼';
     position: absolute;
-    right: 38px;
-    top: 51px;
-    transform: translateY(-50%);
     color: var(--color-border-focus);
     pointer-events: none;
     font-size: 12px;
-}
+} */
 
 option {
     background-color: var(--color-bg-secondary);
@@ -337,6 +295,7 @@ option {
     width: 50px;
     height: 50px;
     padding: 6px;
+    margin: 0 1px;
     background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input));
     border: 2px solid var(--color-border);
     border-radius: 8px;
@@ -358,6 +317,20 @@ option {
     background: linear-gradient(145deg, var(--color-bg-input-hover), var(--color-bg-input-hover));
 }
 
+.slot-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.spacer {
+    width: 3px;
+    height: 90%;
+    border-radius: 2px;
+    background: var(--color-border);
+    margin-right: 8px;
+}
+
 .keyboard {
     background: var(--color-bg-secondary);
     border-radius: 15px;
@@ -372,13 +345,30 @@ option {
     justify-content: center;
 }
 
+.mouse {
+    background: var(--color-bg-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.key.mouse-btn {
+    height: 120px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.binds-category {
+    max-height: 40vh;
+    max-width: 60vw;
+    padding: 3px 0;
+}
+
 .bind-options {
     display: grid;
     /* flex-direction: column; */
     grid-template-columns: repeat(4, calc(60vw / 4 - 16px));
     gap: 8px;
-    max-height: 40vh;
-    max-width: 60vw;
 }
 
 .bind-option {
@@ -395,6 +385,15 @@ option {
 
     flex: 1 1 calc(25% - 1rem);
     /* max-width: ; */
+}
+
+.bind-group-label {
+    /* font-size: 12px; */
+    font-weight: bold;
+    color: var(--color-text-primary);
+    /* margin-top: 10px; */
+    width: 100%;
+    text-align: left;
 }
 
 .hl-colors {

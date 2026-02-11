@@ -1,32 +1,22 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue';
-import { keyboardData, displaySettings } from '../store';
+import { computed, ref } from 'vue';
+import { keyboardData, displaySettings, gameData } from '../store';
 
-const items = [
-    { id: 'none', label: "Any/Empty", icon: 'none' },
-    { id: 'sword', label: "Sword", icon: 'sword' },
-    { id: 'axe', label: "Axe", icon: 'axe' },
-    { id: 'pick', label: "Pickaxe", icon: 'pick'},
-    { id: 'obsidian', label: "Obsidian", icon: 'obsidian' },
-    { id: 'crystal', label: "Crystals", icon: 'crystal' },
-    { id: 'anchor', label: "Respawn Anchor", icon: 'anchor' },
-    { id: 'glow', label: "Glowstone", icon: 'glow' },
-    { id: 'pearl', label: "Ender Pearl", icon: 'pearl' },
-    // { id: 'mace', label: "Mace", icon: 'mace' },
-    { id: 'gap', label: "Golden Apple", icon: 'gap' },
-    { id: 'food', label: "Food", icon: 'food' },
-    { id: 'totem', label: "Totem of Undying", icon: 'totem' },
-    { id: 'potion_health', label: "Health Potion", icon: 'potion_health' },
-    { id: 'potion_strength', label: "Strength Potion", icon: 'potion_strength'},
-    { id: 'potion_fire', label: "Fire Resistance Potion", icon: 'potion_fire'}
-]
+const items = computed(() => {
+    return gameData.value?.hotbarItems || [];
+})
+
+const hotbarSize = computed(() => {
+    return gameData.value?.hotbarSize || 9;
+})
 
 let selectedSlot = ref(0);
 let showPopover = ref(false);
 
 function editHotbarSlot(n: number) {
     if (displaySettings.viewMode) return;
+    if (!gameData.value?.canEditHotbar) return;
     
     selectedSlot.value = n;
     showPopover.value = true;
@@ -37,13 +27,15 @@ function closeHotbarSlotEditor() {
 }
 
 function keybindForHotbar(n: number) {
+    //@ts-ignore
     let keybind = '';
     Object.keys(keyboardData.keys).forEach(k => {
         const e = keyboardData.keys[k];
-        if (e?.includes('hb_' + n.toString())) {
+        if (e == 'hb_' + n.toString()) {
             keybind = k;
         }
     })
+    // return keybind;
     return '';
 }
 
@@ -51,10 +43,11 @@ function keybindForHotbar(n: number) {
 
 <template>
     <div class="settings-section">
-        <div v-for="slot in [0, 1, 2, 3, 4, 5, 6, 7, 8]">
+        <div v-for="slot in Array.from({ length: hotbarSize || 9 }, (_, i) => i)" class="slot-container">
             <!-- <label class="form-label">Slot {{ slot }} item</label> -->
+            <div class="spacer" :hidden="!(gameData?.hotbarSpacers as any)?.includes(slot)"></div>
             <button @click="editHotbarSlot(slot)" class="cell hotbar-slot">
-                <img :src="'/' +  keyboardData.hotbar[slot] + '.svg'">
+                <img :src="'/' +  items.find(i => i.id == keyboardData.hotbar[slot])?.icon">
                 <div class="cell-label">{{ keybindForHotbar(slot) }}</div>
             </button>
         </div>
@@ -62,8 +55,8 @@ function keybindForHotbar(n: number) {
 
     <div @click="closeHotbarSlotEditor" class="cover" :style="{display: showPopover ? '' : 'none'}"></div>
     <div class="popover settings-section grid" :style="{display: showPopover ? '' : 'none'}">
-        <div v-for="item in items" @click="keyboardData.hotbar[selectedSlot] = item.id; closeHotbarSlotEditor()" class="cell tooltip" :data-tooltip="item.label">
-            <img :src="'/' +  item.icon + '.svg'">
+        <div v-for="item in items" @click="keyboardData.hotbar[selectedSlot] = item.id; closeHotbarSlotEditor()" class="cell hotbar-slot tooltip" :data-tooltip="item.label">
+            <img :src="'/' +  item.icon">
         </div>
     </div>
 </template>
@@ -143,6 +136,20 @@ option {
     background-color: var(--color-bg-secondary);
 }
 
+.slot-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.spacer {
+    width: 3px;
+    height: 90%;
+    border-radius: 2px;
+    background: var(--color-border);
+    margin-right: 8px;
+}
+
 .cover {
     position: absolute;
     width: 100vw;
@@ -156,5 +163,6 @@ option {
     position: absolute;
     display: flex;
     flex-direction: row;
+    max-width: 514px;
 }
 </style>

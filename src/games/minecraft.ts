@@ -1,0 +1,62 @@
+export default {
+    id: 'minecraft',
+    name: 'Minecraft',
+    icon: 'minecraft/pick.svg',
+    keys: [
+        { id: 'move_forward', label: "Move Forward", short: "forward" },
+        { id: 'move_backward', label: "Move Backward", short: "back" },
+        { id: 'move_left', label: "Strafe Left", short: "left" },
+        { id: 'move_right', label: "Strafe Right", short: "right" },
+        { id: 'move_jump', label: "Jump" },
+        { id: 'move_sprint', label: "Sprint" },
+        { id: 'move_sneak', label: "Sneak" },
+
+        { id: 'int_attack', label: "Attack / Break", short: "attack" },
+        { id: 'int_use', label: "Use / Place", short: "use" },
+
+        { id: 'inv_open', label: "Inventory", short: "inv" },
+        { id: 'inv_offhand', label: "Off Hand" },
+        { id: 'inv_drop', label: "Drop Item", short: "drop" },
+
+        { id: 'misc_playerlist', label: "Player List", short: "list" },
+        { id: 'misc_zoom', label: "Zoom" },
+    ],
+    groups: [
+        { id: 'move', name: "Movement", color: "blue" },
+        { id: 'inv', name: "Inventory", color: "purple" },
+        { id: 'int', name: "Interact", color: "cyan" },
+        { id: 'misc', name: "Misc", color: "grey" },
+    ],
+    hotbarSize: 9,
+    hotbarKeysColor: 'green',
+    canEditHotbar: true,
+    hotbarItems: [
+        { id: 'none', label: "Any/Empty", icon: 'none.svg' },
+        { id: 'sword', label: "Sword", icon: 'minecraft/sword.svg' },
+        { id: 'axe', label: "Axe", icon: 'minecraft/axe.svg' },
+        { id: 'pick', label: "Pickaxe", icon: 'minecraft/pick.svg' },
+        { id: 'obsidian', label: "Obsidian", icon: 'minecraft/obsidian.svg' },
+        { id: 'crystal', label: "Crystals", icon: 'minecraft/crystal.svg' },
+        { id: 'anchor', label: "Respawn Anchor", icon: 'minecraft/anchor.svg' },
+        { id: 'glow', label: "Glowstone", icon: 'minecraft/glow.svg' },
+        { id: 'pearl', label: "Ender Pearl", icon: 'minecraft/pearl.svg' },
+        { id: 'mace', label: "Mace", icon: 'minecraft/mace.svg' },
+        { id: 'gap', label: "Golden Apple", icon: 'minecraft/gap.svg' },
+        { id: 'food', label: "Food", icon: 'minecraft/food.svg' },
+        { id: 'totem', label: "Totem of Undying", icon: 'minecraft/totem.svg' },
+        { id: 'health', label: "Health Potion", icon: 'minecraft/potion_health.svg' },
+        { id: 'strength', label: "Strength Potion", icon: 'minecraft/potion_strength.svg' },
+        { id: 'fireres', label: "Fire Resistance Potion", icon: 'minecraft/potion_fire.svg' },
+        { id: 'speed', label: "Speed Potion", icon: 'minecraft/potion_speed.svg' }
+    ],
+    hotbarSpacers: [],
+    defaultBinds: {
+        w: 'move_forward',
+        a: 'move_left',
+        s: 'move_backward',
+        d: 'move_right',
+        lmb: 'int_attack',
+        rmb: 'int_use',
+        space: 'move_jump',
+    }
+}

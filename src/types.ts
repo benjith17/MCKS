@@ -1,11 +1,14 @@
 export interface KeyboardData extends Object {
     name: string,
-    tags: tag[],
+    tags: Tag[],
     keys: Record<string, string>,
-    hotbar: [string?, string?, string?, string?, string?, string?, string?, string?, string?],
+    hotbar: (string | null)[],
+    keyboard: string,
+    mouse: string,
+    game: string,
 }
 
-export class tag {
+export class Tag {
     id: string;
     name: string;
     color: string;
