@@ -2,6 +2,7 @@ import { reactive, computed } from "vue";
 import type { KeyboardData, Tag } from "./types";
 import minecraft from "./games/minecraft";
 import cs2 from "./games/cs2";
+import rust from "./games/rust";
 
 export const keyboardData = reactive<KeyboardData>({
     name: '',
@@ -235,6 +236,7 @@ export const mouseButtons = computed(() =>
 export const gameList = reactive([
     minecraft,
     cs2,
+    rust,
 ]);
 
 export const gameData = computed(() =>

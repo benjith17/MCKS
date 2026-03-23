@@ -27,7 +27,7 @@ function closeHotbarSlotEditor() {
 }
 
 function keybindForHotbar(n: number) {
-    //@ts-ignore
+    // @ts-ignore
     let keybind = '';
     Object.keys(keyboardData.keys).forEach(k => {
         const e = keyboardData.keys[k];

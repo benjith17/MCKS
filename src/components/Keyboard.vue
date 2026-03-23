@@ -231,19 +231,26 @@ function formatKeyOptionData() {
 }
 
 .cover {
-    position: absolute;
+    position: fixed;
     width: 100vw;
     height: 100vh;
     background-color: var(--color-overlay);
     top: 0;
     left: 0;
+    z-index: 1000;
 }
 
 .popover {
-    position: absolute;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 1001;
 }
 
 .dropdown-select {
