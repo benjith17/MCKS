@@ -157,7 +157,7 @@ async function copyLink() {
         <Hotbar />
         <p v-show="displaySettings.captureMode" class="watermark">
             Made with <img src="/icon.svg" width="15"></img> MCKS <span
-                style="color: #aaaaaa">(https://mcks-cie.pages.dev/)</span>
+                style="color: #aaaaaa">(https://mcks.benjith.uk/)</span>
         </p>
         <div class="button-group">
             <button @click="share()" v-if="displaySettings.captureMode == false">Share</button>
