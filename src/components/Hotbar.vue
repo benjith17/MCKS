@@ -8,7 +8,7 @@ const items = computed(() => {
 })
 
 const hotbarSize = computed(() => {
-    return gameData.value?.hotbarSize || 9;
+    return gameData.value?.hotbarSize || 0;
 })
 
 let selectedSlot = ref(0);
@@ -42,7 +42,7 @@ function keybindForHotbar(n: number) {
 </script>
 
 <template>
-    <div class="settings-section">
+    <div class="settings-section" v-if="hotbarSize > 0">
         <div v-for="slot in Array.from({ length: hotbarSize || 9 }, (_, i) => i)" class="slot-container">
             <!-- <label class="form-label">Slot {{ slot }} item</label> -->
             <div class="spacer" :hidden="!(gameData?.hotbarSpacers as any)?.includes(slot)"></div>

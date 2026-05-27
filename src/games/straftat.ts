@@ -1,0 +1,55 @@
+export default {
+    id: 'straftat',
+    name: 'Straftat',
+    icon: 'cs2/knife.svg',
+    keys: [
+        { id: 'move_forward', label: "Move Forward", short: "forward" },
+        { id: 'move_backward', label: "Move Backward", short: "back" },
+        { id: 'move_left', label: "Strafe Left", short: "left" },
+        { id: 'move_right', label: "Strafe Right", short: "right" },
+        { id: 'move_jump', label: "Jump" },
+        { id: 'move_sprint', label: "Sprint" },
+        { id: 'move_crouch', label: "Duck" },
+        { id: 'misc_lean_left', label: "Lean Left", short: "lean l" },
+        { id: 'misc_lean_right', label: "Lean Right", short: "lean r" },
+
+        { id: 'gun_fire', label: "Fire" },
+        { id: 'gun_scope', label: "Scope" },
+        { id: 'gun_reload', label: "Reload" },
+
+        { id: 'item_pickup', label: "Pick Up Item", short: "pickup" },
+
+        { id: 'chat_open', label: "Open Chat", short: "chat" },
+        { id: 'chat_voice', label: "Voice Chat", short: "voice" },
+
+        { id: 'misc_score', label: "Scoreboard", short: "score" },
+    ],
+    groups: [
+        { id: 'move', name: "Movement", color: "blue" },
+        { id: 'item', name: "Item", color: "green" },
+        { id: 'gun', name: "Gun", color: "purple" },
+        { id: 'chat', name: "Chat", color: "cyan" },
+        { id: 'misc', name: "Misc", color: "grey" },
+    ],
+    hotbarSize: 0,
+    hotbarKeysColor: 'green',
+    canEditHotbar: false,
+    hotbarItems: [],
+    hotbarSpacers: [],
+    defaultBinds: {
+        w: 'move_forward',
+        a: 'move_left',
+        s: 'move_backward',
+        d: 'move_right',
+        q: 'misc_lean_left',
+        e: 'misc_lean_right',
+        lmb: 'gun_fire',
+        rmb: 'gun_scope',
+        r: 'gun_reload',
+        space: 'move_jump',
+        f: 'item_pickup',
+        shiftleft: 'move_sprint',
+        ctrlleft: 'move_crouch',
+        tab: 'misc_score',
+    }
+}

@@ -11,7 +11,7 @@ const items = computed(() => {
 })
 
 const hotbarSize = computed(() => {
-    return gameData.value?.hotbarSize || 9;
+    return gameData.value?.hotbarSize || 0;
 })
 
 const highlights = [
@@ -190,7 +190,7 @@ function formatKeyOptionData() {
                 </div>
             </div>
 
-            <div class="hb">
+            <div class="hb" v-if="hotbarSize > 0">
                 <div class="slot-container" v-for="slot in Array.from({ length: hotbarSize || 9 }, (_, i) => i)">
                     <div class="spacer" :hidden="!(gameData?.hotbarSpacers as any)?.includes(slot)"></div>
                     <div class="hb-slot" @click="keyboardData.keys[selectedKey] = 'hb_' + (slot + 1); closeKeyEdit()">
