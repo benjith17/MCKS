@@ -1,7 +1,7 @@
 export default {
     id: 'straftat',
     name: 'Straftat',
-    icon: 'cs2/knife.svg',
+    icon: 'straftat.png',
     keys: [
         { id: 'move_forward', label: "Move Forward", short: "forward" },
         { id: 'move_backward', label: "Move Backward", short: "back" },
@@ -9,7 +9,7 @@ export default {
         { id: 'move_right', label: "Strafe Right", short: "right" },
         { id: 'move_jump', label: "Jump" },
         { id: 'move_sprint', label: "Sprint" },
-        { id: 'move_crouch', label: "Duck" },
+        { id: 'move_crouch', label: "Crouch / Slide", short: "crouch" },
         { id: 'misc_lean_left', label: "Lean Left", short: "lean l" },
         { id: 'misc_lean_right', label: "Lean Right", short: "lean r" },
 
